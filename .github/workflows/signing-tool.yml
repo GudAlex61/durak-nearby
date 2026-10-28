@@ -1,0 +1,21 @@
+name: Android signing utility
+on:
+  push:
+    branches: [build-tools]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tools:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Collect runner APK signing tool
+        run: |
+          DURAK_APKSIGNER="$(find "$ANDROID_HOME/build-tools" -path '*/lib/apksigner.jar' | sort -V | tail -1)"
+          test -n "$DURAK_APKSIGNER"
+          mkdir -p signing-tool
+          cp "$DURAK_APKSIGNER" signing-tool/apksigner.jar
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Android-signing-tool
+          path: signing-tool/apksigner.jar
