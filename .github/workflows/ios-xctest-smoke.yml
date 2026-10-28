@@ -1,0 +1,36 @@
+name: Native iOS XCTest gameplay
+on:
+  push:
+    branches: [ios-xctest-smoke]
+permissions:
+  contents: read
+jobs:
+  simulator:
+    runs-on: macos-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.7'
+          cache: true
+      - run: flutter pub get
+      - name: Prepare native integration test
+        run: flutter build ios --config-only --simulator integration_test/app_test.dart
+      - name: Boot iPhone simulator
+        timeout-minutes: 12
+        run: |
+          xcrun simctl list devices available --json > /tmp/durak-ios-devices.json
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          d=json.load(open('/tmp/durak-ios-devices.json'))
+          phone=next(x for group in d['devices'].values() for x in group if x['name'].startswith('iPhone'))
+          Path('/tmp/durak-sim-id').write_text(phone['udid'])
+          subprocess.run(['xcrun','simctl','boot',phone['udid']],check=False,timeout=45)
+          subprocess.run(['xcrun','simctl','bootstatus',phone['udid'],'-b'],check=True,timeout=600)
+          PY
+      - name: Run game scenario on native XCTest
+        timeout-minutes: 15
+        run: |
+          xcodebuild test -workspace ios/Runner.xcworkspace -scheme Runner -configuration Debug -destination "id=$(cat /tmp/durak-sim-id)" -resultBundlePath /tmp/durak-ios.xcresult CODE_SIGNING_ALLOWED=NO
