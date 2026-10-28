@@ -1,0 +1,8 @@
+{
+  "bundle_id": "dev.duraknearby.durakBt",
+  "version": "0.3.1",
+  "build": "5",
+  "platform": "iphoneos",
+  "payload": "Payload/Runner.app",
+  "signing": "unsigned build; must be signed locally before installation"
+}

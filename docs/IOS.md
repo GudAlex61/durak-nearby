@@ -1,49 +1,40 @@
-# iOS 0.3.0
+# iOS 0.3.1
 
-Код игры, бот, 24/36 карт, переводной режим и анимации общие для Android
-и iOS. Нативный iOS-проект: `ios/Runner.xcworkspace`, bundle ID
-`dev.duraknearby.durakBt`, минимум iOS 13. Bluetooth Usage Descriptions
-заданы, бот не запрашивает доступ к Bluetooth.
+Готов нативный iPhone IPA: `DurakNearby-ios-unsigned.ipa`, версия 0.3.1,
+сборка 5, ARM64, минимум iOS 13. Собран Xcode 26.6 / iPhoneOS SDK 26.5
+на macOS; готовое приложение — 16.1 МБ до упаковки.
 
-## Проверка на Mac
+Bundle ID: `dev.duraknearby.durakBt`. Правила, бот, 24/36 карт, переводной
+режим, перетаскивание, кнопка «Взять» и анимации общие с Android.
 
-Установите Flutter 3.35.7, Xcode и CocoaPods. Затем из корня проекта:
+## Готовая сборка
+
+https://github.com/GudAlex61/durak-nearby/actions/runs/40641671235
+
+Анализ без замечаний; 67 тестов прошли; iPhone ARM64 Release собран;
+структура Payload, Info.plist, платформа iphoneos и Mach-O проверены.
+IPA не подписан. Установка с Windows через локальную подпись AltStore:
+`docs/IPHONE_INSTALL.md`. Установка на физический iPhone и радиообмен BLE
+между телефонами в этой работе пока не проверены.
+
+Сценарий запуска игры с ботом и выхода в меню пройден на iPhone Simulator:
+https://github.com/GudAlex61/durak-nearby/actions/runs/40648425021
+
+## Пересборка
+
+В Actions доступны независимые проверки симулятора и сборка iPhone IPA.
+Для локального запуска на Mac установите Flutter 3.35.7, Xcode и CocoaPods:
 
 ```sh
-bash tool/ios_check.sh
+flutter pub get
+flutter analyze
+flutter test --reporter expanded
+flutter build ios --release --no-codesign
 ```
 
-Скрипт выполнит анализ и тесты, соберёт и установит приложение в iPhone
-Simulator, запустит интеграционный сценарий и сделает скриншот. Затем проверит
-сборку для реального arm64 iPhone без подписи. В `dist` будут ZIP с `.app`:
-симуляторный и неподписанный для устройства. Скрипт ничего не публикует.
+Для запуска через Xcode откройте `ios/Runner.xcworkspace`, выберите свою
+Team в Signing & Capabilities и подключённый iPhone. Для TestFlight нужны
+Apple Developer Program и подписанная сборка.
 
-## Установка на настоящий iPhone
-
-Откройте `ios/Runner.xcworkspace` в Xcode, выберите Runner → Signing &
-Capabilities → Team (свой Apple ID), подключите iPhone и нажмите Run.
-Для TestFlight используйте Apple Developer Program, собственный bundle ID и
-`flutter build ipa --release`. Подписанный IPA появляется в `build/ios/ipa`.
-Неподписанный `.app` нельзя установить как готовый IPA.
-
-## Автоматически на GitHub
-
-Содержимое проекта разместите в корне своего репозитория. Actions → Mobile
-checks → Run workflow. macOS job вызывает тот же скрипт; сборки и скриншот
-будут в артефакте DurakNearby-iOS. Workflow подготовлен, но из текущей среды
-не запущен: здесь нет Mac и доступа к GitHub-репозиторию для этого проекта.
-
-Проверки Flutter с TargetPlatform.iOS — проверки интерфейса, а не запуск
-iOS Simulator. Они не заменяют Xcode-компиляцию и проверку Bluetooth на паре
-физических телефонов.
-
-Официальная инструкция: https://docs.flutter.dev/deployment/ios
-
-## IPA для установки с Windows
-
-Скрипт теперь также упаковывает iPhoneOS .app в `Payload/Runner.app` и создаёт
-`dist/DurakNearby-ios-unsigned.ipa`. Валидатор отвергает simulator bundle и
-проверяет метаданные и Mach-O. Это структурная проверка, не проверка запуска
-или подписи. После macOS-сборки IPA подписывается локально через AltServer.
-Пошаговая инструкция — `docs/IPHONE_INSTALL.md`. Здесь IPA ещё не собран:
-доступ к macOS/GitHub runner не подключён.
+Проверки с TargetPlatform.iOS не равны запуску симулятора. Реальные результаты
+и границы проверки записаны в `docs/TEST_REPORT.md`.

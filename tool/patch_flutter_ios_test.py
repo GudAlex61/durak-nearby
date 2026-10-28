@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Log-reader readiness logic adapted from Flutter (Copyright 2014 The Flutter
+# Authors), under BSD-3-Clause; see licenses/FLUTTER_BSD_LICENSE.
 """Backport Flutter PR #193142 to the CI's pinned 3.35.7 test launcher.
 
 Only flutter_tools changes. The engine, application and release IPA are untouched.

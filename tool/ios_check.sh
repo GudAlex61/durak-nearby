@@ -18,6 +18,10 @@ xcrun simctl bootstatus "$DURAK_SIM_ID" -b
 flutter build ios --simulator --debug
 xcrun simctl install "$DURAK_SIM_ID" build/ios/iphonesimulator/Runner.app
 xcrun simctl launch "$DURAK_SIM_ID" dev.duraknearby.durakBt
+xcrun simctl terminate "$DURAK_SIM_ID" dev.duraknearby.durakBt
+if [[ "$(flutter --version --machine | python3 -c 'import json,sys; print(json.load(sys.stdin)["frameworkVersion"])')" == 3.35.7 ]]; then
+  python3 tool/patch_flutter_ios_test.py "$(python3 -c 'import pathlib,shutil; print(pathlib.Path(shutil.which("flutter")).resolve().parent.parent)')"
+fi
 flutter test integration_test/app_test.dart -d "$DURAK_SIM_ID" --dart-define=TEST_MODE=true --reporter expanded
 xcrun simctl launch "$DURAK_SIM_ID" dev.duraknearby.durakBt
 sleep 3

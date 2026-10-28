@@ -1,0 +1,19 @@
+{
+  "apk": "DurakNearby-0.3.1.apk",
+  "manifest": {
+    "versionCode": 5,
+    "versionName": "0.3.1",
+    "compileSdkVersion": 36,
+    "compileSdkVersionCodename": "16",
+    "package": "dev.duraknearby.durak_bt",
+    "platformBuildVersionCode": 36,
+    "platformBuildVersionName": 16
+  },
+  "bytes": 47389626,
+  "sha256": "7dea4762c9e067eddbadc078bdd6bac6c92ba7235323d7a833e706511a85db91",
+  "signature_schemes": [
+    "v2",
+    "v3"
+  ],
+  "signer_sha256": "34de299b152add9eb8415deba7410a895b8771ea4f6fb06a531a506f92beb28b"
+}

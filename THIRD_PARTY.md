@@ -1,6 +1,8 @@
 # Зависимости
 
 - Flutter SDK — BSD-3-Clause: https://github.com/flutter/flutter/blob/3.35.7/LICENSE
+  Исправление тестового запуска из Flutter PR #193142 адаптировано в
+  `tool/patch_flutter_ios_test.py`; текст лицензии — `licenses/FLUTTER_BSD_LICENSE`.
 - bluetooth_low_energy 6.2.1 и его реализации для платформ — MIT:
   https://github.com/yanshouwang/bluetooth_low_energy
 - Точный граф Dart-зависимостей зафиксирован в `pubspec.lock`.

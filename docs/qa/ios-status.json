@@ -1,0 +1,19 @@
+{
+  "version": "0.3.1",
+  "build": 5,
+  "host": "macOS GitHub Actions",
+  "xcode_compilation": "passed",
+  "xcode": "26.6",
+  "iphoneos_sdk": "26.5",
+  "flutter": "3.35.7",
+  "unit_widget_tests": 67,
+  "unit_widget_result": "passed",
+  "analyze": "passed",
+  "ipa": "built and verified",
+  "signing": "unsigned; local AltStore or Xcode signing required",
+  "device_run": "https://github.com/GudAlex61/durak-nearby/actions/runs/40641671235",
+  "physical_installation": "not_run",
+  "physical_ble": "not_run",
+  "simulator_smoke": "passed: bot game opened, hand and table visible, exit confirmation to menu",
+  "simulator_run": "https://github.com/GudAlex61/durak-nearby/actions/runs/40648425021"
+}

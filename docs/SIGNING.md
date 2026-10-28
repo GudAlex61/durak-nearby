@@ -1,6 +1,6 @@
 # Тестовая подпись Android
 
-APK 0.3.0 собирается в режиме Release, но подписан development-ключом.
+APK 0.3.1 собирается в режиме Release, но подписан development-ключом.
 В `android/app/build.gradle.kts` выбран стандартный debug signing config.
 Для публикации настройте отдельный production signing config.
 
