@@ -1,0 +1,36 @@
+name: iPhone device build
+on:
+  push:
+    branches: [build-tools]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  device:
+    runs-on: macos-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.7'
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test --reporter expanded
+      - name: Compile iPhone ARM64 release
+        run: flutter build ios --release --no-codesign
+      - name: Package and verify iPhone IPA
+        run: |
+          mkdir -p dist/Payload
+          ditto build/ios/iphoneos/Runner.app dist/Payload/Runner.app
+          (cd dist && ditto -c -k --sequesterRsrc --keepParent Payload DurakNearby-ios-unsigned.ipa)
+          python3 tool/verify_ipa.py dist/DurakNearby-ios-unsigned.ipa dist/ios-build-info.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: DurakNearby-iPhone-device
+          path: |
+            dist/*.ipa
+            dist/ios-build-info.json
+          if-no-files-found: warn
