@@ -41,9 +41,12 @@ jobs:
           PY
           xcrun simctl install "$(cat /tmp/durak-sim-id)" build/ios/iphonesimulator/Runner.app
           xcrun simctl launch "$(cat /tmp/durak-sim-id)" dev.duraknearby.durakBt
+          sleep 3
+          xcrun simctl io "$(cat /tmp/durak-sim-id)" screenshot docs/qa/ios/before-test.png
+          xcrun simctl terminate "$(cat /tmp/durak-sim-id)" dev.duraknearby.durakBt
       - name: Native iPhone gameplay smoke
         timeout-minutes: 8
-        run: flutter test integration_test/app_test.dart -d "$(cat /tmp/durak-sim-id)" --dart-define=TEST_MODE=true --reporter expanded
+        run: flutter test integration_test/app_test.dart -d "$(cat /tmp/durak-sim-id)" --dart-define=TEST_MODE=true --reporter expanded --verbose
       - name: Capture native evidence
         if: always()
         run: |
