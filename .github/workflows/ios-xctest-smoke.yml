@@ -16,7 +16,7 @@ jobs:
           cache: true
       - run: flutter pub get
       - name: Prepare native integration test
-        run: flutter build ios --config-only --simulator integration_test/app_test.dart
+        run: flutter build ios --simulator --debug integration_test/app_test.dart
       - name: Boot iPhone simulator
         timeout-minutes: 12
         run: |
