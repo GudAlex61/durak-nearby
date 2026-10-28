@@ -1,0 +1,18 @@
+name: durak_bt
+description: Offline two-player Durak over Bluetooth Low Energy.
+publish_to: none
+version: 0.3.1+5
+environment:
+  sdk: '>=3.9.2 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  bluetooth_low_energy: 6.2.1
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+flutter:
+  uses-material-design: true
