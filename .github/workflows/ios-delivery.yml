@@ -11,23 +11,52 @@ concurrency:
 jobs:
   ios:
     runs-on: macos-latest
-    timeout-minutes: 45
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.35.7'
           cache: true
-      - run: bash tool/ios_check.sh
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test --reporter expanded
+      - name: Compile simulator app
+        timeout-minutes: 10
+        run: flutter build ios --simulator --debug
+      - name: Boot simulator, install and launch
+        timeout-minutes: 6
+        run: |
+          mkdir -p docs/qa/ios
+          xcrun simctl list devices available --json > /tmp/durak-ios-devices.json
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          d=json.load(open('/tmp/durak-ios-devices.json'))
+          phone=next(x for group in d['devices'].values() for x in group if x['name'].startswith('iPhone'))
+          print(phone, flush=True)
+          Path('/tmp/durak-sim-id').write_text(phone['udid'])
+          subprocess.run(['xcrun','simctl','boot',phone['udid']],check=False,timeout=45)
+          subprocess.run(['xcrun','simctl','bootstatus',phone['udid'],'-b'],check=True,timeout=240)
+          PY
+          xcrun simctl install "$(cat /tmp/durak-sim-id)" build/ios/iphonesimulator/Runner.app
+          xcrun simctl launch "$(cat /tmp/durak-sim-id)" dev.duraknearby.durakBt
+      - name: Native iPhone gameplay smoke
+        timeout-minutes: 8
+        run: flutter test integration_test/app_test.dart -d "$(cat /tmp/durak-sim-id)" --dart-define=TEST_MODE=true --reporter expanded
+      - name: Capture native evidence
+        if: always()
+        run: |
+          if [ -f /tmp/durak-sim-id ]; then
+            xcrun simctl launch "$(cat /tmp/durak-sim-id)" dev.duraknearby.durakBt || true
+            sleep 3
+            xcrun simctl io "$(cat /tmp/durak-sim-id)" screenshot docs/qa/ios/simulator.png || true
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: DurakNearby-iOS
-          path: |
-            dist/*.ipa
-            dist/*.zip
-            dist/ios-build-info.json
-            docs/qa/ios/
+          name: DurakNearby-iOS-simulator
+          path: docs/qa/ios/
           if-no-files-found: warn
   android:
     runs-on: ubuntu-latest
